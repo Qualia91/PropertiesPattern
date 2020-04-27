@@ -6,28 +6,42 @@ import java.util.function.Function;
 public class Property {
 
 	private static final String PARENT_NAME  = "PARENT";
-	HashMap<String, Object> propertiesMap = new HashMap<>();
+	private final HashMap<String, Object> propertiesMap = new HashMap<>();
 
 	public Object get(String name) {
-		return (propertiesMap.get(name) != null) ? propertiesMap.get(name) : actOnParent(property -> property.get(name), null);
+		return (propertiesMap.get(name) != null || propertiesMap.get(name) != PropertyMetaData.NULL) ? propertiesMap.get(name) : actOnParent(property -> property.get(name), null);
 	}
 
 	public void put(String name, Object object) {
-		if (name.equals(PARENT_NAME)) {
-			assert object instanceof Property;
-		}
+		assert !name.equals(PARENT_NAME) || object instanceof Property;
 		propertiesMap.put(name, object);
 	}
 
 	public boolean has(String name) {
-		return (propertiesMap.containsKey(name) ? true : actOnParent(property -> property.has(name), false));
+		return (propertiesMap.containsKey(name) && propertiesMap.get(name) != PropertyMetaData.NULL) ? true : actOnParent(property -> property.has(name), false);
 	}
 
-	public boolean remove(String name) {
+	public boolean removeGlobal(String name) {
+		if (propertiesMap.containsKey(name)) {
+			// if its of type PropertyMetaData.NULL, remove this and then remove from parent
+			if (propertiesMap.get(name) != PropertyMetaData.NULL) {
+				actOnParent(property -> property.removeGlobal(name), false);
+			}
+			propertiesMap.remove(name);
+		} else {
+			return actOnParent(property -> property.removeGlobal(name), false);
+		}
+		return true;
+	}
+
+	public boolean removeLocal(String name) {
 		if (propertiesMap.containsKey(name)) {
 			propertiesMap.remove(name);
 		} else {
-			return actOnParent(property -> property.remove(name), false);
+			// if present in parent, create a new entry of same name here and set it to PropertyMetaData.NULL
+			if (actOnParent(property -> property.has(name), false)) {
+				propertiesMap.put(name, PropertyMetaData.NULL);
+			}
 		}
 		return true;
 	}
