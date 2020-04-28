@@ -1,10 +1,5 @@
 package com.nick.wood.properties_pattern;
 
-import com.nick.wood.properties_pattern.cor.FinalHandler;
-import com.nick.wood.properties_pattern.cor.Handler;
-import com.nick.wood.properties_pattern.cor.NullHandler;
-import com.nick.wood.properties_pattern.cor.Request;
-
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -12,10 +7,8 @@ public class Property {
 
 	public static final String PARENT = "PARENT_LONG_STRING_SO_NOBODY_EVER_CHOOSES_THIS";
 	private final HashMap<String, PropertyValue> propertiesMap = new HashMap<>();
-	private final Handler corHandler;
 
 	public Property() {
-		corHandler = new NullHandler(null);
 	}
 
 	public Object get(String name) {
