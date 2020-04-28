@@ -4,5 +4,4 @@ public enum PropertyMetaData {
 	NULL,
 	FINAL,
 	PRIVATE,
-	PROTECTED,
 }

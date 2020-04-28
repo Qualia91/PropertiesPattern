@@ -16,9 +16,9 @@ class MainTest {
 
 		Property property = new Property();
 		// setters
-		property.put("a", 1);
-		property.put("b", "bValue");
-		property.put("c", uuid);
+		property.put("a", new PropertyValue(1));
+		property.put("b", new PropertyValue("bValue"));
+		property.put("c", new PropertyValue(uuid));
 
 		// getters
 		assertEquals(1, property.get("a"));
@@ -44,11 +44,11 @@ class MainTest {
 		assertFalse(property.has("b"));
 		assertNull(property.get("b"));
 
-		HashMap<String, Object> propertiesMap = property.getPropertiesMap();
+		HashMap<String, PropertyValue> propertiesMap = property.getPropertiesMap();
 		assertEquals(1, propertiesMap.size());
 
 		// try adding parent that isnt property
-		assertThrows(AssertionError.class, () -> property.put(Property.PARENT, 1));
+		assertThrows(AssertionError.class, () -> property.put(Property.PARENT, new PropertyValue(1)));
 
 	}
 
@@ -58,16 +58,16 @@ class MainTest {
 		UUID uuid = UUID.randomUUID();
 
 		Property propertyOne = new Property();
-		propertyOne.put("a", 1);
-		propertyOne.put("b", "bValue");
-		propertyOne.put("c", uuid);
+		propertyOne.put("a", new PropertyValue(1));
+		propertyOne.put("b", new PropertyValue("bValue"));
+		propertyOne.put("c", new PropertyValue(uuid));
 
 		Property propertyTwo = new Property();
-		propertyTwo.put("a", 4);
-		propertyTwo.put("d", "bValue");
-		propertyTwo.put("e", uuid);
+		propertyTwo.put("a", new PropertyValue(4));
+		propertyTwo.put("d", new PropertyValue("bValue"));
+		propertyTwo.put("e", new PropertyValue(uuid));
 
-		propertyOne.put(Property.PARENT, propertyTwo);
+		propertyOne.put(Property.PARENT, new PropertyValue(propertyTwo));
 
 		assertEquals(1, propertyOne.get("a"));
 		assertEquals("bValue", propertyOne.get("b"));
@@ -96,9 +96,9 @@ class MainTest {
 		assertEquals("bValue", propertyOne.get("d"));
 		assertNull(propertyOne.get("e"));
 
-		HashMap<String, Object> propertiesOneMap = propertyOne.getPropertiesMap();
+		HashMap<String, PropertyValue> propertiesOneMap = propertyOne.getPropertiesMap();
 		assertEquals(3, propertiesOneMap.size());
-		HashMap<String, Object> propertiesTwoMap = propertyTwo.getPropertiesMap();
+		HashMap<String, PropertyValue> propertiesTwoMap = propertyTwo.getPropertiesMap();
 		assertEquals(2, propertiesTwoMap.size());
 
 	}
